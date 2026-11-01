@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { PRESETS, RANGES } from "@/data/leads";
 import { downloadLeadReport } from "@/lib/pdf";
 import type { CheckboxState, LeadRow } from "@/types/lead";
@@ -33,13 +33,13 @@ const COUNTRIES: Record<string, string[]> = {
   Singapore: ["Singapore"],
   Indonesia: ["Jakarta", "Surabaya", "Bandung", "Bali"],
   Thailand: ["Bangkok", "Phuket", "Chiang Mai", "Pattaya"],
-  "Saudi & Gulf Other": ["Riyadh"],
 };
-delete COUNTRIES["Saudi & Gulf Other"];
 
 const COUNTRY_NAMES = Object.keys(COUNTRIES);
 const DEFAULT_COUNTRY = "United Arab Emirates";
-const DEFAULT_CUSTOM: [number, number] = [2.5, 4.5];
+const DEFAULT_CUSTOM: [number, number] = [0, 5];
+const MAX_LEADS = 10000;
+const PAGE_SIZE = 200;
 
 /* ======================= ICONS ======================= */
 
@@ -293,7 +293,7 @@ function RatingSlider({
   onChange: (lo: number, hi: number) => void;
   size: "sm" | "md";
 }) {
-  const pct = (v: number) => ((v - 1) / 4) * 100;
+  const pct = (v: number) => (v / 5) * 100;
   const round = (v: number) => Math.round(v * 10) / 10;
   const thumb = size === "sm" ? THUMB_SM : THUMB_MD;
   const input =
@@ -301,18 +301,14 @@ function RatingSlider({
 
   return (
     <div className={size === "sm" ? "relative mx-1 mt-3.5 h-4" : "relative mt-4 h-5"}>
-      <div
-        className={
-          "absolute top-1/2 w-full -translate-y-1/2 rounded-full bg-gray-200 " + (size === "sm" ? "h-1" : "h-1")
-        }
-      />
+      <div className="absolute top-1/2 h-1 w-full -translate-y-1/2 rounded-full bg-gray-200" />
       <div
         className="absolute top-1/2 h-1 -translate-y-1/2 rounded-full bg-blue-600"
         style={{ left: `${pct(lo)}%`, right: `${100 - pct(hi)}%` }}
       />
       <input
         type="range"
-        min={1}
+        min={0}
         max={5}
         step={0.1}
         value={lo}
@@ -323,7 +319,7 @@ function RatingSlider({
       />
       <input
         type="range"
-        min={1}
+        min={0}
         max={5}
         step={0.1}
         value={hi}
@@ -391,7 +387,8 @@ const field =
 const sheetField =
   "w-full rounded-xl border border-gray-200 bg-white px-4 py-3.5 text-sm text-gray-700 focus:border-blue-400 focus:outline-none";
 
-const TYPES = ["Clinics", "Dental clinics", "Restaurants"];
+// Ye names lib/places.ts ke KEYWORDS ki keys se match hone chahiye
+const TYPES = ["Clinics", "Dental clinics", "Restaurants", "Salons", "Gyms", "Real estate", "Car repair"];
 
 function FilterCard({
   preset,
@@ -1093,6 +1090,9 @@ export default function LeadFinder() {
   const [minReviews, setMinReviews] = useState("");
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
+  const [progress, setProgress] = useState("");
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const runRef = useRef(0);
 
   const cities = ["All " + country, ...COUNTRIES[country]];
   const [minR, maxR] = preset === 2 ? custom : RANGES[preset];
@@ -1144,41 +1144,91 @@ export default function LeadFinder() {
     selected.length === 0 ? "off" : selected.length === all.length ? "on" : "some";
   const toggleAll = () => setSelected(headerState === "on" ? [] : all.map((_, k) => k));
 
-  /* ---------- search ---------- */
+  /* ---------- search (batches parallel, live results) ---------- */
   const runSearch = async (o: { country?: string; area?: number } = {}) => {
     const c = o.country ?? country;
     const a = o.area ?? area;
     const cityName = a > 0 ? COUNTRIES[c][a - 1] : "";
+    const runId = ++runRef.current;
+
     setLoading(true);
+    setLeads([]);
+    setSelected([]);
+    setBannerOpen(true);
+    setShowSaved(false);
+    setVisibleCount(PAGE_SIZE);
+    setProgress("");
+
+    const seen = new Set<string>();
+    let acc: LeadRow[] = [];
+
     try {
-      const res = await fetch("/api/leads", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          businessType,
-          city: c,
-          area: cityName,
-          minRating: minR,
-          maxRating: maxR,
-          minReviews: Number(minReviews) || 0,
-          noWebsiteOnly,
-        }),
-      });
-      const data = await res.json().catch(() => null);
-      if (!res.ok) {
-        console.error("Leads API error:", res.status, data);
-        showToast("Search failed, console check karo");
-        return;
+      let batch = 0;
+      let totalBatches = 1;
+      let dry = 0; // lagatar kitne batches me koi naya lead nahi mila
+      while (batch < totalBatches && acc.length < MAX_LEADS && dry < 24) {
+        if (runRef.current !== runId) return;
+        const group =
+          totalBatches === 1 ? [batch] : [batch, batch + 1, batch + 2].filter((b) => b < totalBatches);
+
+        const results = await Promise.all(
+          group.map(async (b) => {
+            try {
+              const res = await fetch("/api/leads", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  businessType,
+                  city: c,
+                  area: cityName,
+                  cities: a === 0 ? COUNTRIES[c] : undefined,
+                  minRating: minR,
+                  maxRating: maxR,
+                  minReviews: Number(minReviews) || 0,
+                  noWebsiteOnly: false, // filter sirf UI me lagta hai
+                  batch: b,
+                }),
+              });
+              const data = await res.json().catch(() => null);
+              if (!res.ok) console.error("Leads API error:", res.status, data);
+              return res.ok ? data : null;
+            } catch {
+              return null;
+            }
+          })
+        );
+
+        if (runRef.current !== runId) return;
+
+        if (results.every((r) => !r)) {
+          showToast("Search failed, console check karo");
+          break;
+        }
+
+        let added = 0;
+        for (const data of results) {
+          if (!data) continue;
+          totalBatches = data.totalBatches ?? totalBatches;
+          for (const l of (data.leads ?? []) as LeadRow[]) {
+            const k = l.placeId ?? leadKey(l);
+            if (!seen.has(k)) {
+              seen.add(k);
+              acc.push(l);
+              added++;
+            }
+          }
+        }
+        if (acc.length > MAX_LEADS) acc = acc.slice(0, MAX_LEADS);
+        dry = added === 0 ? dry + group.length : 0;
+        batch += group.length;
+        setProgress(`${Math.min(batch, totalBatches)}/${totalBatches}`);
+        setLeads([...acc]);
       }
-      setLeads(Array.isArray(data) ? data : data?.leads ?? []);
-      setSelected([]);
-      setBannerOpen(true);
-      setShowSaved(false);
     } catch (err) {
       console.error("Leads fetch error:", err);
       showToast("Search failed");
     } finally {
-      setLoading(false);
+      if (runRef.current === runId) setLoading(false);
     }
   };
 
@@ -1264,6 +1314,12 @@ export default function LeadFinder() {
         onReset={handleReset}
       />
 
+      {loading && (
+        <p className="mt-3 text-xs text-gray-500">
+          Searching batch {progress || "0/?"} · {leads.length} leads mili
+        </p>
+      )}
+
       <StatsRow leads={leads} businessType={businessType} location={location} />
 
       <LeadsHeader
@@ -1286,7 +1342,7 @@ export default function LeadFinder() {
 
       <LeadsList
         all={all}
-        leads={filtered}
+        leads={filtered.slice(0, visibleCount)}
         selected={selected}
         onToggle={toggle}
         headerState={headerState}
@@ -1295,6 +1351,15 @@ export default function LeadFinder() {
         savedKeys={savedKeys}
         onToggleSave={toggleSave}
       />
+
+      {filtered.length > visibleCount && (
+        <button
+          onClick={() => setVisibleCount((n) => n + PAGE_SIZE)}
+          className="mt-4 w-full rounded-lg border border-gray-200 bg-white py-2.5 text-sm font-medium text-slate-700 hover:bg-gray-50"
+        >
+          Show more ({filtered.length - visibleCount} baaki)
+        </button>
+      )}
 
       {bannerOpen && selected.length > 0 && (
         <SelectionBanner

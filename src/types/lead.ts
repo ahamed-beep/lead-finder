@@ -3,6 +3,7 @@ export type WebsiteStatus = "No website" | "Has website";
 export type CheckboxState = "on" | "off" | "some";
 
 export interface LeadRow {
+  placeId?: string;
   name: string;
   rating: string;
   reviews: number;
