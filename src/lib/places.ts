@@ -67,6 +67,7 @@ const KEYWORDS: Record<string, string[]> = {
 };
 
 const SUBAREAS: Record<string, string[]> = {
+  /* ---------- UAE ---------- */
   Dubai: [
     "Jumeirah", "Al Barsha", "Deira", "Business Bay", "Dubai Marina", "Bur Dubai",
     "Downtown Dubai", "JLT", "Al Quoz", "Karama", "Satwa", "Al Nahda",
@@ -75,9 +76,171 @@ const SUBAREAS: Record<string, string[]> = {
   ],
   "Abu Dhabi": ["Khalidiyah", "Al Reem Island", "Yas Island", "Mussafah", "Corniche", "Al Wahda", "Saadiyat Island"],
   Sharjah: ["Al Majaz", "Al Nahda", "Al Qasimia", "Muwaileh", "Al Khan"],
+  Ajman: ["Al Nuaimiya", "Al Rashidiya", "Al Jurf", "Al Rawda", "Corniche Ajman", "Al Hamidiya"],
+  "Ras Al Khaimah": ["Al Nakheel", "Al Hamra", "Al Dhait", "Khuzam", "Al Mamourah", "Julphar"],
+  "Al Ain": ["Al Jimi", "Al Mutawaa", "Al Khabisi", "Al Towayya", "Al Muwaiji", "Zakher"],
+
+  /* ---------- Pakistan ---------- */
   Lahore: ["DHA", "Gulberg", "Johar Town", "Model Town", "Bahria Town", "Wapda Town", "Cantt", "Iqbal Town", "Shadman"],
   Karachi: ["Clifton", "DHA", "Gulshan-e-Iqbal", "North Nazimabad", "Saddar", "PECHS", "Bahadurabad"],
   Islamabad: ["F-6", "F-7", "F-10", "G-9", "G-11", "I-8", "Blue Area", "E-11"],
+  Rawalpindi: ["Saddar", "Bahria Town", "Satellite Town", "Chaklala", "DHA Phase 2", "Commercial Market", "Raja Bazaar"],
+  Faisalabad: ["Madina Town", "Peoples Colony", "D Ground", "Susan Road", "Jaranwala Road", "Millat Town", "Canal Road"],
+  Multan: ["Gulgasht Colony", "Cantt", "Shah Rukn-e-Alam Colony", "Bosan Road", "Model Town", "Hussain Agahi"],
+  Peshawar: ["University Town", "Hayatabad", "Saddar", "Gulbahar", "Dalazak Road", "Ring Road"],
+
+  /* ---------- India ---------- */
+  Delhi: ["Connaught Place", "Saket", "Dwarka", "Lajpat Nagar", "Karol Bagh", "Rohini", "Vasant Kunj", "Janakpuri"],
+  Mumbai: ["Andheri", "Bandra", "Powai", "Borivali", "Colaba", "Juhu", "Thane"],
+  Bengaluru: ["Koramangala", "Indiranagar", "Whitefield", "Jayanagar", "HSR Layout", "Electronic City", "Marathahalli"],
+  Hyderabad: ["Banjara Hills", "Jubilee Hills", "Gachibowli", "Madhapur", "Secunderabad", "Kukatpally"],
+  Chennai: ["T Nagar", "Anna Nagar", "Adyar", "Velachery", "OMR", "Mylapore"],
+  Kolkata: ["Salt Lake", "Park Street", "Ballygunge", "New Town", "Howrah", "Dum Dum"],
+  Pune: ["Koregaon Park", "Kothrud", "Hinjewadi", "Baner", "Viman Nagar", "Hadapsar"],
+
+  /* ---------- Saudi Arabia ---------- */
+  Riyadh: ["Olaya", "Al Malaz", "Al Nakheel", "Al Yasmin", "Al Sulaimaniyah", "Hittin", "Al Rawdah"],
+  Jeddah: ["Al Hamra", "Al Rawdah", "Al Salamah", "Al Safa", "Al Balad", "Al Shati", "Al Andalus"],
+  Dammam: ["Al Faisaliyah", "Al Shati", "Al Adamah", "Al Nakheel", "Al Badiyah"],
+  Mecca: ["Al Aziziyah", "Al Shawqiyah", "Al Awali", "Al Naseem", "Al Zahir"],
+  Medina: ["Quba", "Al Aziziyah", "Al Haram", "Al Khalidiyah", "Al Hijra"],
+  Khobar: ["Al Aqrabiyah", "Al Corniche", "Al Ulaya", "Al Rakah", "Al Yarmouk"],
+
+  /* ---------- Qatar ---------- */
+  Doha: ["West Bay", "The Pearl", "Al Sadd", "Al Waab", "Msheireb", "Old Airport", "Bin Mahmoud", "Al Muntazah"],
+  "Al Wakrah": ["Al Wukair", "Mesaieed", "Al Wakrah Souq"],
+  "Al Khor": ["Al Khor Community", "Al Thakhira", "Al Dhakira"],
+  Lusail: ["Marina District", "Fox Hills", "Qetaifan Island", "Lusail Boulevard"],
+
+  /* ---------- Kuwait ---------- */
+  "Kuwait City": ["Sharq", "Salhiya", "Dasman", "Mirgab", "Qibla", "Shuwaikh"],
+  Hawally: ["Maidan Hawally", "Bayan", "Jabriya", "Rumaithiya", "Salwa", "Mishref"],
+  Salmiya: ["Salem Al Mubarak", "Hamad Al Mubarak", "Baghdad Street", "Salmiya Seaside", "Block 10"],
+  Farwaniya: ["Khaitan", "Jleeb Al Shuyoukh", "Abdullah Al Mubarak", "Omariya", "Ardiya", "Rabiya"],
+
+  /* ---------- Oman ---------- */
+  Muscat: ["Ruwi", "Al Khuwair", "Qurum", "Mutrah", "Seeb", "Al Mawaleh", "Bawshar", "Al Ghubra"],
+  Salalah: ["Al Saada", "Awqad", "Dahariz", "Al Wadi", "Salalah Central"],
+  Sohar: ["Sohar Industrial", "Al Hambar", "Falaj Al Qabail", "Sohar Corniche"],
+  Nizwa: ["Nizwa Souq", "Firq", "Sa'al", "Nizwa Fort Area"],
+
+  /* ---------- Bahrain ---------- */
+  Manama: ["Seef", "Juffair", "Adliya", "Diplomatic Area", "Al Hoora", "Sanabis", "Bab Al Bahrain"],
+  Riffa: ["East Riffa", "West Riffa", "Riffa Views", "Al Hajiyat"],
+  Muharraq: ["Busaiteen", "Hidd", "Arad", "Galali", "Amwaj Islands", "Dair"],
+
+  /* ---------- Bangladesh ---------- */
+  Dhaka: ["Gulshan", "Banani", "Dhanmondi", "Uttara", "Mirpur", "Mohammadpur", "Motijheel", "Bashundhara"],
+  Chittagong: ["Agrabad", "GEC Circle", "Panchlaish", "Khulshi", "Nasirabad", "Halishahar"],
+  Khulna: ["Sonadanga", "Khalishpur", "Daulatpur", "Boyra", "Shib Bari"],
+  Sylhet: ["Zindabazar", "Ambarkhana", "Subid Bazar", "Upashahar", "Tilagor"],
+
+  /* ---------- United Kingdom ---------- */
+  London: ["Westminster", "Camden", "Kensington", "Canary Wharf", "Croydon", "Ilford", "Harrow", "Wembley"],
+  Birmingham: ["City Centre", "Edgbaston", "Sparkhill", "Handsworth", "Solihull", "Erdington"],
+  Manchester: ["City Centre", "Didsbury", "Salford", "Rusholme", "Stockport", "Trafford"],
+  Leeds: ["City Centre", "Headingley", "Chapel Allerton", "Roundhay", "Armley", "Moortown"],
+  Glasgow: ["City Centre", "West End", "Southside", "Pollokshields", "Partick", "Merchant City"],
+  Liverpool: ["City Centre", "Anfield", "Aigburth", "Wavertree", "Toxteth", "Allerton"],
+  Bradford: ["City Centre", "Manningham", "Heaton", "Shipley", "Idle", "Eccleshill"],
+
+  /* ---------- United States ---------- */
+  "New York": ["Manhattan", "Brooklyn", "Queens", "Bronx", "Staten Island", "Long Island City"],
+  "Los Angeles": ["Hollywood", "Santa Monica", "Beverly Hills", "Downtown Los Angeles", "Pasadena", "Burbank", "Glendale"],
+  Chicago: ["Loop", "Lincoln Park", "Wicker Park", "Hyde Park", "Lakeview", "River North"],
+  Houston: ["Downtown", "Galleria", "Midtown", "The Heights", "Katy", "Sugar Land"],
+  Miami: ["Brickell", "Coral Gables", "Wynwood", "Miami Beach", "Doral", "Hialeah"],
+  Dallas: ["Uptown", "Deep Ellum", "Plano", "Irving", "Frisco", "Oak Lawn"],
+  "San Francisco": ["Mission District", "SoMa", "Nob Hill", "Sunset District", "Marina District", "Richmond District"],
+
+  /* ---------- Canada ---------- */
+  Toronto: ["Downtown Toronto", "North York", "Scarborough", "Etobicoke", "Yorkville", "Markham"],
+  Vancouver: ["Downtown Vancouver", "Kitsilano", "Burnaby", "Richmond", "Surrey", "Coquitlam"],
+  Montreal: ["Plateau-Mont-Royal", "Downtown Montreal", "Laval", "Verdun", "Westmount", "Outremont"],
+  Calgary: ["Beltline", "Kensington", "Downtown Calgary", "Marda Loop", "Bridgeland"],
+  Ottawa: ["Centretown", "ByWard Market", "Kanata", "Nepean", "Orleans", "Westboro"],
+  Mississauga: ["Square One", "Port Credit", "Erin Mills", "Streetsville", "Meadowvale", "Malton"],
+
+  /* ---------- Australia ---------- */
+  Sydney: ["CBD", "Parramatta", "Bondi", "Chatswood", "Manly", "Liverpool"],
+  Melbourne: ["CBD", "St Kilda", "Richmond", "Southbank", "Footscray", "Box Hill"],
+  Brisbane: ["CBD", "South Brisbane", "Fortitude Valley", "Chermside", "Indooroopilly", "Sunnybank"],
+  Perth: ["CBD", "Fremantle", "Subiaco", "Joondalup", "Northbridge", "Cottesloe"],
+  Adelaide: ["CBD", "Glenelg", "North Adelaide", "Norwood", "Prospect", "Mawson Lakes"],
+
+  /* ---------- Germany ---------- */
+  Berlin: ["Mitte", "Charlottenburg", "Kreuzberg", "Prenzlauer Berg", "Neukölln", "Friedrichshain"],
+  Munich: ["Altstadt", "Schwabing", "Maxvorstadt", "Sendling", "Bogenhausen", "Haidhausen"],
+  Hamburg: ["Altona", "St. Pauli", "Eimsbüttel", "Hamburg-Mitte", "Winterhude", "Harburg"],
+  Frankfurt: ["Innenstadt", "Sachsenhausen", "Bockenheim", "Nordend", "Westend", "Bornheim"],
+  Cologne: ["Altstadt", "Ehrenfeld", "Nippes", "Lindenthal", "Deutz", "Kalk"],
+
+  /* ---------- France ---------- */
+  Paris: ["Le Marais", "Montmartre", "Latin Quarter", "La Défense", "Bastille", "Belleville"],
+  Lyon: ["Presqu'île", "Part-Dieu", "Vieux Lyon", "Croix-Rousse", "Villeurbanne", "Confluence"],
+  Marseille: ["Vieux-Port", "Castellane", "Prado", "Joliette", "La Canebière", "Endoume"],
+  Toulouse: ["Capitole", "Saint-Cyprien", "Compans-Caffarelli", "Blagnac", "Jean Jaurès", "Carmes"],
+  Nice: ["Vieux Nice", "Promenade des Anglais", "Cimiez", "Libération", "Port Lympia", "Jean-Médecin"],
+
+  /* ---------- Spain ---------- */
+  Madrid: ["Salamanca", "Chamberí", "Centro", "Chamartín", "Retiro", "Moncloa"],
+  Barcelona: ["Eixample", "Gràcia", "Sants", "Sant Martí", "Les Corts", "Ciutat Vella"],
+  Valencia: ["Ciutat Vella", "L'Eixample", "Ruzafa", "El Cabanyal", "Benimaclet", "Campanar"],
+  Seville: ["Triana", "Nervión", "Casco Antiguo", "Los Remedios", "Macarena", "Santa Cruz"],
+  Malaga: ["Centro Histórico", "Teatinos", "Pedregalejo", "El Palo", "Cruz de Humilladero", "Churriana"],
+
+  /* ---------- Italy ---------- */
+  Rome: ["Centro Storico", "Trastevere", "Prati", "Parioli", "EUR", "Testaccio"],
+  Milan: ["Duomo", "Navigli", "Porta Nuova", "Brera", "Isola", "Citylife"],
+  Naples: ["Vomero", "Chiaia", "Centro Storico", "Fuorigrotta", "Posillipo", "Arenella"],
+  Turin: ["Centro", "San Salvario", "Crocetta", "Lingotto", "Vanchiglia", "Santa Rita"],
+  Florence: ["Santa Croce", "Oltrarno", "Duomo", "Campo di Marte", "Novoli", "Santo Spirito"],
+
+  /* ---------- Turkey ---------- */
+  Istanbul: ["Kadıköy", "Beşiktaş", "Şişli", "Beyoğlu", "Üsküdar", "Fatih", "Bakırköy", "Ataşehir"],
+  Ankara: ["Çankaya", "Kızılay", "Keçiören", "Yenimahalle", "Etimesgut", "Bahçelievler"],
+  Izmir: ["Konak", "Alsancak", "Karşıyaka", "Bornova", "Buca", "Bayraklı"],
+  Antalya: ["Lara", "Konyaaltı", "Muratpaşa", "Kaleiçi", "Kepez", "Düden"],
+  Bursa: ["Nilüfer", "Osmangazi", "Yıldırım", "Mudanya", "Görükle", "Kestel"],
+
+  /* ---------- Egypt ---------- */
+  Cairo: ["Nasr City", "Heliopolis", "Maadi", "Downtown Cairo", "Zamalek", "New Cairo", "Mohandessin"],
+  Alexandria: ["Smouha", "Sidi Gaber", "Stanley", "San Stefano", "Miami", "Montaza"],
+  Giza: ["Dokki", "Mohandessin", "6th of October", "Haram", "Sheikh Zayed", "Agouza"],
+  "Sharm El Sheikh": ["Naama Bay", "Hadaba", "Sharks Bay", "Nabq", "Old Market"],
+
+  /* ---------- South Africa ---------- */
+  Johannesburg: ["Sandton", "Rosebank", "Randburg", "Midrand", "Fourways", "Soweto", "Bryanston"],
+  "Cape Town": ["City Bowl", "Sea Point", "Claremont", "Bellville", "Century City", "Camps Bay"],
+  Durban: ["Umhlanga", "Berea", "Westville", "Morningside", "Pinetown", "Durban North"],
+  Pretoria: ["Centurion", "Hatfield", "Brooklyn", "Menlyn", "Waterkloof", "Arcadia"],
+
+  /* ---------- Nigeria ---------- */
+  Lagos: ["Ikeja", "Victoria Island", "Lekki", "Surulere", "Yaba", "Ikoyi", "Ajah"],
+  Abuja: ["Wuse", "Garki", "Maitama", "Asokoro", "Gwarinpa", "Jabi"],
+  Kano: ["Nassarawa", "Fagge", "Sabon Gari", "Bompai", "Gwale", "Tarauni"],
+  "Port Harcourt": ["GRA", "Trans Amadi", "Rumuola", "D-Line", "Rumuokoro", "Diobu"],
+
+  /* ---------- Malaysia ---------- */
+  "Kuala Lumpur": ["Bukit Bintang", "KLCC", "Bangsar", "Cheras", "Mont Kiara", "Petaling Jaya", "Subang Jaya", "Ampang"],
+  Penang: ["George Town", "Bayan Lepas", "Gurney", "Butterworth", "Air Itam", "Tanjung Bungah"],
+  "Johor Bahru": ["Taman Molek", "Mount Austin", "Skudai", "Iskandar Puteri", "Permas Jaya", "Tebrau"],
+  "Kota Kinabalu": ["Likas", "Luyang", "Inanam", "Damai", "Penampang", "Tanjung Aru"],
+
+  /* ---------- Singapore ---------- */
+  Singapore: ["Orchard", "Tampines", "Jurong East", "Woodlands", "Bishan", "Toa Payoh", "Bedok", "Novena"],
+
+  /* ---------- Indonesia ---------- */
+  Jakarta: ["Kemang", "Menteng", "Kelapa Gading", "Senayan", "Tebet", "Pondok Indah", "Kuningan"],
+  Surabaya: ["Gubeng", "Tegalsari", "Wonokromo", "Rungkut", "Sukolilo", "Mulyorejo"],
+  Bandung: ["Dago", "Cihampelas", "Buah Batu", "Setiabudi", "Antapani", "Braga"],
+  Bali: ["Seminyak", "Kuta", "Ubud", "Denpasar", "Canggu", "Sanur", "Nusa Dua"],
+
+  /* ---------- Thailand ---------- */
+  Bangkok: ["Sukhumvit", "Silom", "Sathorn", "Chatuchak", "Ratchada", "Thonglor", "Siam"],
+  Phuket: ["Patong", "Kata", "Karon", "Phuket Town", "Rawai", "Kamala"],
+  "Chiang Mai": ["Nimman", "Old City", "Santitham", "Hang Dong", "San Sai", "Chang Phueak"],
+  Pattaya: ["Jomtien", "Naklua", "Central Pattaya", "South Pattaya", "Pratumnak", "North Pattaya"],
 };
 
 const EMAIL_RE = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,}/g;
